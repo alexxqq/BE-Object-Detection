@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  backend1:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8000"
+    networks:
+      - app-network
+    env_file: 
+      - ./app/.env
+
+  backend2:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8000"
+    networks:
+      - app-network
+    env_file: 
+      - ./app/.env
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
