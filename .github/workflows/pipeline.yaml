@@ -13,8 +13,8 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-2
-    
+        aws-region: us-east-1
+
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
@@ -24,14 +24,14 @@ jobs:
       env:
         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: my-app
-        IMAGE_TAG: ${{ github.sha }}
+        ECR_REPOSITORY: detection
+        IMAGE_TAG: latest
       with:
         args: set image deployment/$ECR_REPOSITORY $ECR_REPOSITORY=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        
-    - name: verify deployment
-      uses: kodermax/kubectl-aws-eks@main
-      env:
-        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-      with:
-        args: rollout status deployment/my-app
+
+    # - name: verify deployment
+    #   uses: kodermax/kubectl-aws-eks@main
+    #   env:
+    #     KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+    #   with:
+    #     args: rollout status deployment/my-app
