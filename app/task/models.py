@@ -7,13 +7,13 @@ class Task(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     task_id = Column(String, unique=True, index=True)
-    status = Column(String)
-    result = Column(String, nullable=True)
-    error = Column(String, nullable=True)
+    status = Column(String) #
+    result = Column(String, nullable=True) #
+    error = Column(String, nullable=True)  #
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
 
     user = relationship('User', back_populates='tasks')
-    results = relationship('TaskResult', back_populates='task', cascade='all, delete')
+    results = relationship('TaskResult', back_populates='task', cascade='all, delete') #
 
     def __repr__(self):
         return f"<Task(id={self.id}, task_id='{self.task_id}', status='{self.status}', user_id={self.user_id})>"

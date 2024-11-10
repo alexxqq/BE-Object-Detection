@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from auth.router import router as auth_router
 from detection.router import router as image_router
@@ -9,10 +10,13 @@ app = FastAPI(
 )
 
 origins = [
-    "http://localhost",
-    "http://localhost:8008",
-    "*"
+    "http://54.89.224.132",
+    "https://detect.uno",  
+    "http://detect.uno",  
+    "http://localhost",    
+    "http://localhost:8008"
 ]
+
 
 app.add_middleware(
     CORSMiddleware,

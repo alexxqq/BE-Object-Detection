@@ -6,10 +6,10 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+deployEKS.yaml
 # C extensions
 *.so
-
+venv2
 # Distribution / packaging
 .Python
 build/

@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: object-detection-app
+  labels:
+    app: object-detection
+    version: v1
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: object-detection
+
+  template:
+    metadata:
+      labels:
+        app: object-detection
+        version: v1
+    spec:
+      containers:
+      - name: object-detection
+        image: 682033500984.dkr.ecr.us-east-1.amazonaws.com/detection:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: DB_USER
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: DB_PASS
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: DB_HOST
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: SECRET_KEY
+        - name: DB_PORT
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: DB_PORT
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1

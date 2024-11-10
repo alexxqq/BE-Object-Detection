@@ -1,0 +1,39 @@
+name: deployFastAPI 
+
+'on': 
+  workflow_call: null 
+  workflow_dispatch: null 
+  push: 
+    branches: 
+      - slave 
+jobs: 
+  DeployFastAPI: 
+    name: Deploying FastAPI 
+    runs-on: ubuntu-latest 
+    steps: 
+      - name: Git checkout
+        uses: actions/checkout@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      # - name: Login to Amazon ECR
+      #   id: login-ecr
+      #   uses: aws-actions/amazon-ecr-login@v2
+      # - name: Build, tag, and push image to Amazon ECR
+      #   env:
+      #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}        
+      #     IMAGE_TAG: latest
+      #   run: |
+      #     docker build -t $ECR_REGISTRY/detection:$IMAGE_TAG -f app/Dockerfile .
+      #     docker push $ECR_REGISTRY/detection:$IMAGE_TAG
+      - name: Connect to instance and deploy
+        env: 
+          SSH_KEY: ${{ secrets.KEY_SSH }} 
+          HOST_NAME: ${{ secrets.FASTAPI_HOST }}
+        run: |
+          echo $SSH_KEY | tr ' ' '\n' | base64 --decode > key1.pem
+          chmod 400 key1.pem
+          ssh -o StrictHostKeyChecking=no -i "key1.pem" ubuntu@$HOST_NAME 'source ~/deploy.sh'
